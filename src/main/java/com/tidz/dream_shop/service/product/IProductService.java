@@ -1,4 +1,4 @@
-package com.tidz.dream_shop.model.service.product;
+package com.tidz.dream_shop.service.product;
 
 import java.util.List;
 

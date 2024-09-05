@@ -1,4 +1,4 @@
-package com.tidz.dream_shop.model.repository;
+package com.tidz.dream_shop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
