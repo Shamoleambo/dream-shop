@@ -18,7 +18,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Product {
@@ -30,7 +29,7 @@ public class Product {
 	private String name;
 	private String brand;
 	private BigDecimal price;
-	private Integer iventory;
+	private Integer inventory;
 	private String description;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -39,5 +38,16 @@ public class Product {
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Image> images;
+
+	public Product(String name, String brand, BigDecimal price, Integer inventory, String description,
+			Category category) {
+		super();
+		this.name = name;
+		this.brand = brand;
+		this.price = price;
+		this.inventory = inventory;
+		this.description = description;
+		this.category = category;
+	}
 
 }

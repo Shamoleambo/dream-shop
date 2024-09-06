@@ -3,9 +3,10 @@ package com.tidz.dream_shop.service.product;
 import java.util.List;
 
 import com.tidz.dream_shop.model.Product;
+import com.tidz.dream_shop.request.AddProductRequest;
 
 public interface IProductService {
-	Product addProduct(Product product);
+	Product addProduct(AddProductRequest product);
 
 	Product getProductById(Long id);
 

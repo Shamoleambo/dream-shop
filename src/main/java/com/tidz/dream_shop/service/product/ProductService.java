@@ -1,12 +1,16 @@
 package com.tidz.dream_shop.service.product;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.tidz.dream_shop.exception.ProductNotFoundException;
+import com.tidz.dream_shop.model.Category;
 import com.tidz.dream_shop.model.Product;
+import com.tidz.dream_shop.repository.CategoryRepository;
 import com.tidz.dream_shop.repository.ProductRepository;
+import com.tidz.dream_shop.request.AddProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +19,22 @@ import lombok.RequiredArgsConstructor;
 public class ProductService implements IProductService {
 
 	private final ProductRepository productRepository;
+	private final CategoryRepository categoryRepository;
 
 	@Override
-	public Product addProduct(Product product) {
-		// TODO Auto-generated method stub
-		return null;
+	public Product addProduct(AddProductRequest request) {
+		Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName())).orElseGet(() -> {
+			Category newCategory = new Category(request.getCategory().getName());
+			return categoryRepository.save(newCategory);
+		});
+		
+		request.setCategory(category);
+		return productRepository.save(createProduct(request, category));
+	}
+
+	private Product createProduct(AddProductRequest request, Category category) {
+		return new Product(request.getName(), request.getBrand(), request.getPrice(), request.getInventory(),
+				request.getDescription(), category);
 	}
 
 	@Override
