@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.tidz.dream_shop.exception.AlreadyExistsException;
 import com.tidz.dream_shop.exception.ResourceNotFoundException;
 import com.tidz.dream_shop.model.Category;
 import com.tidz.dream_shop.repository.CategoryRepository;
@@ -35,7 +36,9 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public Category addCategory(Category category) {
-		return null;
+		return Optional.of(category).filter(c -> !this.categoryRepository.existsByName(c.getName()))
+				.map(this.categoryRepository::save)
+				.orElseThrow(() -> new AlreadyExistsException(category.getName() + " already exists"));
 	}
 
 	@Override
