@@ -2,13 +2,19 @@ package com.tidz.dream_shop.service.product;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.tidz.dream_shop.exception.ProductNotFoundException;
 import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.repository.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
 
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
 	@Override
 	public Product addProduct(Product product) {
@@ -23,7 +29,9 @@ public class ProductService implements IProductService {
 
 	@Override
 	public void deleteProductById(Long id) {
-		// TODO Auto-generated method stub
+		this.productRepository.findById(id).ifPresentOrElse(this.productRepository::delete, () -> {
+			throw new ProductNotFoundException("Product not found");
+		});
 
 	}
 
@@ -35,44 +43,37 @@ public class ProductService implements IProductService {
 
 	@Override
 	public List<Product> getAllProducts() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findAll();
 	}
 
 	@Override
-	public List<Product> getProductsByCategoryId(String category) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Product> getProductsByCategory(String category) {
+		return this.productRepository.findByCategoryName(category);
 	}
 
 	@Override
 	public List<Product> getProductsByBrand(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findByBrand(name);
 	}
 
 	@Override
 	public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findByCategoryNameAndBrand(category, brand);
 	}
 
 	@Override
 	public List<Product> getProductsByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findByName(name);
 	}
 
 	@Override
 	public List<Product> getProductsByBrandAndName(String brand, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findByBrandAndName(brand, name);
 	}
 
 	@Override
 	public Long countProductsByBrandAndName(String brand, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.countByBrandAndName(brand, name);
 	}
 
 }
