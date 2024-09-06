@@ -24,19 +24,16 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public Category getCategoryByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.categoryRepository.findByName(name);
 	}
 
 	@Override
 	public List<Category> getAllCategories() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.categoryRepository.findAll();
 	}
 
 	@Override
 	public Category addCategory(Category category) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -48,8 +45,9 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public void deleteCategoryById(Long id) {
-		// TODO Auto-generated method stub
-
+		this.categoryRepository.findById(id).ifPresentOrElse(this.categoryRepository::delete, () -> {
+			throw new ResourceNotFoundException("Category not found");
+		});
 	}
 
 }
