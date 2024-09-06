@@ -1,6 +1,7 @@
 package com.tidz.dream_shop.service.category;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,11 @@ public class CategoryService implements ICategoryService {
 	}
 
 	@Override
-	public Category updateCategory(Category category) {
-		// TODO Auto-generated method stub
-		return null;
+	public Category updateCategory(Category category, Long id) {
+		return Optional.ofNullable(getCategoryById(id)).map(oldCategory -> {
+			oldCategory.setName(category.getName());
+			return this.categoryRepository.save(oldCategory);
+		}).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 	}
 
 	@Override
