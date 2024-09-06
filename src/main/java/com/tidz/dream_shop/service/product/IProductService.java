@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.request.AddProductRequest;
+import com.tidz.dream_shop.request.UpdateProductRequest;
 
 public interface IProductService {
 	Product addProduct(AddProductRequest product);
@@ -12,7 +13,7 @@ public interface IProductService {
 
 	void deleteProductById(Long id);
 
-	void updateProduct(Product product, Long id);
+	Product updateProduct(UpdateProductRequest request, Long id);
 
 	List<Product> getAllProducts();
 

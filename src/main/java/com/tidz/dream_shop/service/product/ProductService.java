@@ -11,6 +11,7 @@ import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.repository.CategoryRepository;
 import com.tidz.dream_shop.repository.ProductRepository;
 import com.tidz.dream_shop.request.AddProductRequest;
+import com.tidz.dream_shop.request.UpdateProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,11 +24,12 @@ public class ProductService implements IProductService {
 
 	@Override
 	public Product addProduct(AddProductRequest request) {
-		Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName())).orElseGet(() -> {
-			Category newCategory = new Category(request.getCategory().getName());
-			return categoryRepository.save(newCategory);
-		});
-		
+		Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+				.orElseGet(() -> {
+					Category newCategory = new Category(request.getCategory().getName());
+					return categoryRepository.save(newCategory);
+				});
+
 		request.setCategory(category);
 		return productRepository.save(createProduct(request, category));
 	}
@@ -51,9 +53,23 @@ public class ProductService implements IProductService {
 	}
 
 	@Override
-	public void updateProduct(Product product, Long id) {
-		// TODO Auto-generated method stub
+	public Product updateProduct(UpdateProductRequest request, Long id) {
+		return this.productRepository.findById(id)
+				.map(existingProduct -> updateExistingProduct(existingProduct, request)).map(productRepository::save)
+				.orElseThrow(() -> new ProductNotFoundException("Product not found"));
+	}
 
+	private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
+		existingProduct.setName(request.getName());
+		existingProduct.setBrand(request.getBrand());
+		existingProduct.setPrice(request.getPrice());
+		existingProduct.setInventory(request.getInventory());
+		existingProduct.setDescription(request.getDescription());
+
+		Category category = this.categoryRepository.findByName(request.getCategory().getName());
+		existingProduct.setCategory(category);
+
+		return existingProduct;
 	}
 
 	@Override
