@@ -1,5 +1,10 @@
 package com.tidz.dream_shop.service.image;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +44,14 @@ public class ImageService implements IImageService {
 
 	@Override
 	public void updateImage(MultipartFile file, Long imageId) {
-		// TODO Auto-generated method stub
+		Image image = this.getImageById(imageId);
+		try {
+			image.setFileName(file.getOriginalFilename());
+			image.setImage(new SerialBlob(file.getBytes()));
+			this.imageRepository.save(image);
+		} catch (IOException | SQLException e) {
+			throw new RuntimeException(e.getMessage()); 
+		}
 
 	}
 
