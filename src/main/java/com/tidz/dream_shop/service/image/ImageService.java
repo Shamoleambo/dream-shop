@@ -3,6 +3,7 @@ package com.tidz.dream_shop.service.image;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tidz.dream_shop.exception.ResourceNotFoundException;
 import com.tidz.dream_shop.model.Image;
 import com.tidz.dream_shop.repository.ImageRepository;
 import com.tidz.dream_shop.service.product.IProductService;
@@ -18,13 +19,15 @@ public class ImageService implements IImageService {
 
 	@Override
 	public Image getImageById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.imageRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No image found with id: " + id));
 	}
 
 	@Override
 	public void deleteImageById(Long id) {
-		// TODO Auto-generated method stub
+		this.imageRepository.findById(id).ifPresentOrElse(this.imageRepository::delete, () -> {
+			throw new ResourceNotFoundException("No image found with id: " + id);
+		});
 
 	}
 
