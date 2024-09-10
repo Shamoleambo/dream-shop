@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,6 +73,21 @@ public class ImageController {
 
 		return ResponseEntity.status(INTERNAL_SERVER_ERROR)
 				.body(new ApiResponse("Update Failed", INTERNAL_SERVER_ERROR));
+	}
+
+	@DeleteMapping("/image/{imageId}/delete")
+	public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long imageId) {
+		try {
+			Image image = this.imageService.getImageById(imageId);
+			if (image != null) {
+				this.imageService.deleteImageById(imageId);
+				return ResponseEntity.ok(new ApiResponse("Delete Success!", null));
+			}
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+		return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+				.body(new ApiResponse("Deletion Failed", INTERNAL_SERVER_ERROR));
 	}
 
 }
