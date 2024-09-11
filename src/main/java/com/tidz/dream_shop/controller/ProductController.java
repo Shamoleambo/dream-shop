@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +65,32 @@ public class ProductController {
 			return ResponseEntity.ok(new ApiResponse("Updated", product));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+	}
+
+	@DeleteMapping("/product/{id}/delete")
+	public ResponseEntity<ApiResponse> deleteProductById(@PathVariable("id") Long id) {
+		try {
+			this.productService.deleteProductById(id);
+			return ResponseEntity.ok(new ApiResponse("Product Deleted", null));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+	}
+
+	@GetMapping("/by/brand-and-name/{brandName}/{productName}")
+	public ResponseEntity<ApiResponse> getProductByBrandAndName(@PathVariable("brandName") String brandName,
+			@PathVariable("productName") String productName) {
+		try {
+			List<Product> products = this.productService.getProductsByBrandAndName(brandName, productName);
+
+			if (products.isEmpty()) {
+				return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Products not Found", null));
+			}
+
+			return ResponseEntity.ok(new ApiResponse("Product Found", products));
+		} catch (Exception e) {
+			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
 		}
 	}
 
