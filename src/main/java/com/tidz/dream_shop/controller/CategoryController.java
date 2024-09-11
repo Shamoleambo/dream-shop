@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,6 +63,16 @@ public class CategoryController {
 		try {
 			Category category = this.categoryService.getCategoryByName(name);
 			return ResponseEntity.ok(new ApiResponse("Found", category));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+	}
+
+	@DeleteMapping("/category/{id}/delete")
+	public ResponseEntity<ApiResponse> deleteCategoryById(@PathVariable("id") Long id) {
+		try {
+			this.categoryService.deleteCategoryById(id);
+			return ResponseEntity.ok(new ApiResponse("Success", null));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
 		}
