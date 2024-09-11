@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.tidz.dream_shop.exception.ProductNotFoundException;
+import com.tidz.dream_shop.exception.ResourceNotFoundException;
 import com.tidz.dream_shop.model.Category;
 import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.repository.CategoryRepository;
@@ -54,7 +55,8 @@ public class ProductService implements IProductService {
 
 	@Override
 	public Product getProductById(Long id) {
-		return this.productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+		return this.productRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 	}
 
 	@Override
