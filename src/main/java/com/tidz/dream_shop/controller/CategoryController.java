@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,7 +59,7 @@ public class CategoryController {
 		}
 	}
 
-	@GetMapping("/{name}/category")
+	@GetMapping("/category/{name}/category")
 	public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable("name") String name) {
 		try {
 			Category category = this.categoryService.getCategoryByName(name);
@@ -73,6 +74,16 @@ public class CategoryController {
 		try {
 			this.categoryService.deleteCategoryById(id);
 			return ResponseEntity.ok(new ApiResponse("Success", null));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+	}
+
+	@PutMapping("/category/{id}/update")
+	public ResponseEntity<ApiResponse> updateCategory(@PathVariable("id") Long id, @RequestBody Category category) {
+		try {
+			Category updatedCategory = this.categoryService.updateCategory(category, id);
+			return ResponseEntity.ok(new ApiResponse("Updated", updatedCategory));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
 		}
