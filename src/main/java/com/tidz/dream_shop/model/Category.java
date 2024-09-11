@@ -2,6 +2,8 @@ package com.tidz.dream_shop.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +31,7 @@ public class Category {
 		this.name = name;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "category")
 	private List<Product> products;
 }
