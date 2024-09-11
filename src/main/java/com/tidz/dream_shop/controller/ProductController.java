@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tidz.dream_shop.exception.ResourceNotFoundException;
@@ -78,9 +79,9 @@ public class ProductController {
 		}
 	}
 
-	@GetMapping("/by/brand-and-name/{brandName}/{productName}")
-	public ResponseEntity<ApiResponse> getProductsByBrandAndName(@PathVariable("brandName") String brandName,
-			@PathVariable("productName") String productName) {
+	@GetMapping("/by/brand-and-name")
+	public ResponseEntity<ApiResponse> getProductsByBrandAndName(@RequestParam String brandName,
+			@RequestParam String productName) {
 		try {
 			List<Product> products = this.productService.getProductsByBrandAndName(brandName, productName);
 
@@ -94,9 +95,9 @@ public class ProductController {
 		}
 	}
 
-	@GetMapping("/by/category-and-brand/{categoryName}/{brandName}")
-	public ResponseEntity<ApiResponse> getProductsByCategoryAndName(@PathVariable String categoryName,
-			@PathVariable String brandName) {
+	@GetMapping("/by/category-and-brand")
+	public ResponseEntity<ApiResponse> getProductsByCategoryAndName(@RequestParam String categoryName,
+			@RequestParam String brandName) {
 		try {
 			List<Product> products = this.productService.getProductsByCategoryAndBrand(categoryName, brandName);
 
@@ -155,5 +156,4 @@ public class ProductController {
 			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
 		}
 	}
-
 }
