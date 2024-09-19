@@ -1,6 +1,7 @@
 package com.tidz.dream_shop.service.cart;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,7 @@ public class CartItemService implements ICartItemService {
 	public void addItemToCart(Long cartId, Long productId, int quantity) {
 		Cart cart = cartService.getCart(cartId);
 		Product product = productService.getProductById(productId);
-		CartItem cartItem = cart.getItems().stream().filter(item -> item.getProduct().getId().equals(productId))
-				.findFirst().orElse(null);
+		CartItem cartItem = getCartItem(cartId, productId).orElse(null);
 
 		if (cartItem.getId() == null) {
 			cartItem.setCart(cart);
@@ -49,8 +49,8 @@ public class CartItemService implements ICartItemService {
 	@Override
 	public void removeItemFromCart(Long cartId, Long productId) {
 		Cart cart = cartService.getCart(cartId);
-		CartItem cartItem = cart.getItems().stream().filter(item -> item.getProduct().getId().equals(productId))
-				.findFirst().orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+		CartItem cartItem = getCartItem(cartId, productId)
+				.orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
 		cart.removeItem(cartItem);
 		cartRepository.save(cart);
@@ -60,17 +60,21 @@ public class CartItemService implements ICartItemService {
 	@Override
 	public void updateItemQuantity(Long cartId, Long productId, int quantity) {
 		Cart cart = cartService.getCart(cartId);
-		cart.getItems().stream().filter(item -> item.getProduct().getId().equals(productId)).findFirst()
-				.ifPresent(item -> {
-					item.setQuantity(quantity);
-					item.setUnitPrice(item.getProduct().getPrice());
-					item.setTotalPrice();
-				});
+		getCartItem(cartId, productId).ifPresent(item -> {
+			item.setQuantity(quantity);
+			item.setUnitPrice(item.getProduct().getPrice());
+			item.setTotalPrice();
+		});
 
 		BigDecimal totalAmount = cart.getTotalAmount();
 		cart.setTotalAmount(totalAmount);
 		cartRepository.save(cart);
 
+	}
+
+	public Optional<CartItem> getCartItem(Long cartId, Long productId) {
+		Cart cart = cartService.getCart(cartId);
+		return cart.getItems().stream().filter(item -> item.getProduct().getId().equals(productId)).findFirst();
 	}
 
 }
