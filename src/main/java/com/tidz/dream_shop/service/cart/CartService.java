@@ -37,8 +37,8 @@ public class CartService implements ICartService {
 
 	@Override
 	public BigDecimal getTotalPrice(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Cart cart = getCart(id);
+		return cart.getTotalAmount();
 	}
 
 }
