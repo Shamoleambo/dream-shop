@@ -1,10 +1,10 @@
 package com.tidz.dream_shop.controller;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
