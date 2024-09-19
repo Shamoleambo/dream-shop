@@ -126,8 +126,8 @@ public class ProductController {
 		}
 	}
 
-	@GetMapping("/by/brand/{brand}")
-	public ResponseEntity<ApiResponse> getProductsByBrand(@PathVariable String brand) {
+	@GetMapping("/product/by-brand")
+	public ResponseEntity<ApiResponse> getProductsByBrand(@RequestParam String brand) {
 		try {
 			List<Product> products = this.productService.getProductsByBrand(brand);
 
