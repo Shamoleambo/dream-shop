@@ -1,5 +1,7 @@
 package com.tidz.dream_shop.service.cart;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import com.tidz.dream_shop.exception.ResourceNotFoundException;
@@ -57,7 +59,17 @@ public class CartItemService implements ICartItemService {
 
 	@Override
 	public void updateItemQuantity(Long cartId, Long productId, int quantity) {
-		// TODO Auto-generated method stub
+		Cart cart = cartService.getCart(cartId);
+		cart.getItems().stream().filter(item -> item.getProduct().getId().equals(productId)).findFirst()
+				.ifPresent(item -> {
+					item.setQuantity(quantity);
+					item.setUnitPrice(item.getProduct().getPrice());
+					item.setTotalPrice();
+				});
+
+		BigDecimal totalAmount = cart.getTotalAmount();
+		cart.setTotalAmount(totalAmount);
+		cartRepository.save(cart);
 
 	}
 
