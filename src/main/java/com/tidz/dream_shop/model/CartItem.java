@@ -29,7 +29,7 @@ public class CartItem {
 	private BigDecimal unitPrice;
 	private BigDecimal totalPrice;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
 
