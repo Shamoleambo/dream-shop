@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.tidz.dream_shop.exception.ResourceNotFoundException;
 import com.tidz.dream_shop.model.Cart;
+import com.tidz.dream_shop.repository.CartItemRepository;
 import com.tidz.dream_shop.repository.CartRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class CartService implements ICartService {
 
 	private final CartRepository cartRepository;
+	private final CartItemRepository cartItemRepository;
 
 	@Override
 	public Cart getCart(Long id) {
@@ -26,7 +28,10 @@ public class CartService implements ICartService {
 
 	@Override
 	public void clearCart(Long id) {
-		// TODO Auto-generated method stub
+		Cart cart = getCart(id);
+		cartItemRepository.deleteAllByCartId(id);
+		cart.getItems().clear();
+		cartRepository.deleteById(id);
 
 	}
 
