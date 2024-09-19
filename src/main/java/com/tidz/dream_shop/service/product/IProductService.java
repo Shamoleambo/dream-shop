@@ -2,6 +2,7 @@ package com.tidz.dream_shop.service.product;
 
 import java.util.List;
 
+import com.tidz.dream_shop.dto.ProductDto;
 import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.request.AddProductRequest;
 import com.tidz.dream_shop.request.UpdateProductRequest;
@@ -28,4 +29,6 @@ public interface IProductService {
 	List<Product> getProductsByBrandAndName(String brand, String name);
 
 	Long countProductsByBrandAndName(String brand, String name);
+	
+	ProductDto convertToDto(Product product);
 }

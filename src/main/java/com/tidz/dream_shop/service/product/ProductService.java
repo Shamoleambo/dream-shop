@@ -3,13 +3,18 @@ package com.tidz.dream_shop.service.product;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.tidz.dream_shop.dto.ImageDto;
+import com.tidz.dream_shop.dto.ProductDto;
 import com.tidz.dream_shop.exception.ProductNotFoundException;
 import com.tidz.dream_shop.exception.ResourceNotFoundException;
 import com.tidz.dream_shop.model.Category;
+import com.tidz.dream_shop.model.Image;
 import com.tidz.dream_shop.model.Product;
 import com.tidz.dream_shop.repository.CategoryRepository;
+import com.tidz.dream_shop.repository.ImageRepository;
 import com.tidz.dream_shop.repository.ProductRepository;
 import com.tidz.dream_shop.request.AddProductRequest;
 import com.tidz.dream_shop.request.UpdateProductRequest;
@@ -22,6 +27,8 @@ public class ProductService implements IProductService {
 
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
+	private final ImageRepository imageRepository;
+	private final ModelMapper modelMapper;
 
 	private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
 		existingProduct.setName(request.getName());
@@ -107,6 +114,17 @@ public class ProductService implements IProductService {
 	@Override
 	public Long countProductsByBrandAndName(String brand, String name) {
 		return this.productRepository.countByBrandAndName(brand, name);
+	}
+
+	@Override
+	public ProductDto convertToDto(Product product) {
+		ProductDto productDto = modelMapper.map(product, ProductDto.class);
+
+		List<Image> images = imageRepository.findByProductId(product.getId());
+		List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class)).toList();
+
+		productDto.setImages(imageDtos);
+		return productDto;
 	}
 
 }
