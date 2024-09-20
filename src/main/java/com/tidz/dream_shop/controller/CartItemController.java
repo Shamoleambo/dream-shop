@@ -1,10 +1,12 @@
 package com.tidz.dream_shop.controller;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,17 @@ public class CartItemController {
 		try {
 			cartItemService.removeItemFromCart(cartId, itemId);
 			return ResponseEntity.ok(new ApiResponse("Cart Item Removed", null));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+		}
+	}
+
+	@PutMapping("/cart/{cartId}/item/{itemId}/update")
+	public ResponseEntity<ApiResponse> updateItemQuantity(@PathVariable Long cartId, @PathVariable Long itemId,
+			@RequestParam Integer quantity) {
+		try {
+			cartItemService.updateItemQuantity(cartId, itemId, quantity);
+			return ResponseEntity.ok(new ApiResponse("Cart Item Quantity Updated", null));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
 		}
